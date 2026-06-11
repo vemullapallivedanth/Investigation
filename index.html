@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Detective Investigation System</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+}
+
+header{
+    background:#0d47a1;
+    color:white;
+    text-align:center;
+    padding:25px;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:20px auto;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+h2{
+    color:#0d47a1;
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-top:10px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+button{
+    margin-top:15px;
+    background:#1976d2;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#0d47a1;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1976d2;
+    color:white;
+    padding:12px;
+}
+
+td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+
+tr:nth-child(even){
+    background:#f9f9f9;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+.stat-box{
+    background:#e3f2fd;
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
+}
+
+.stat-box h3{
+    color:#0d47a1;
+}
+
+.result{
+    font-size:18px;
+    line-height:1.8;
+    font-weight:bold;
+}
+
+footer{
+    background:#0d47a1;
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🕵 AI Detective Investigation System</h1>
+<p>Crime Analysis & Suspect Identification Dashboard</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>Case Information</h2>
+
+<p><strong>Case ID:</strong> C001</p>
+<p><strong>Case Type:</strong> Bank Theft Investigation</p>
+<p><strong>Location:</strong> Central City Bank</p>
+<p><strong>Status:</strong> Active Investigation</p>
+</div>
+
+<div class="card">
+<h2>Investigation Statistics</h2>
+
+<div class="stats">
+
+<div class="stat-box">
+<h3 id="suspectCount">0</h3>
+<p>Total Suspects</p>
+</div>
+
+<div class="stat-box">
+<h3>Active</h3>
+<p>Evidence Collection</p>
+</div>
+
+<div class="stat-box">
+<h3>Medium</h3>
+<p>Risk Level</p>
+</div>
+
+<div class="stat-box">
+<h3>Ongoing</h3>
+<p>Investigation Status</p>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h2>Add Suspect Evidence</h2>
+
+<label>Suspect Name</label>
+<input type="text" id="name" placeholder="Enter suspect name">
+
+<label>DNA Match (0 or 1)</label>
+<input type="number" id="dna" min="0" max="1">
+
+<label>CCTV Match (0 or 1)</label>
+<input type="number" id="cctv" min="0" max="1">
+
+<label>Witness Match (0 or 1)</label>
+<input type="number" id="witness" min="0" max="1">
+
+<button onclick="addSuspect()">Add Suspect</button>
+</div>
+
+<div class="card">
+<h2>Suspect Database</h2>
+
+<table id="suspectTable">
+
+<tr>
+<th>Name</th>
+<th>DNA</th>
+<th>CCTV</th>
+<th>Witness</th>
+<th>Evidence Score</th>
+</tr>
+
+</table>
+</div>
+
+<div class="card">
+<h2>AI Investigation Result</h2>
+
+<button onclick="analyze()">Analyze Case</button>
+
+<div id="result" class="result" style="margin-top:15px;">
+No investigation completed yet.
+</div>
+</div>
+
+<div class="card">
+<h2>Evidence Weightage</h2>
+
+<table>
+
+<tr>
+<th>Evidence Type</th>
+<th>Weight</th>
+</tr>
+
+<tr>
+<td>DNA Match</td>
+<td>50 Points</td>
+</tr>
+
+<tr>
+<td>CCTV Match</td>
+<td>30 Points</td>
+</tr>
+
+<tr>
+<td>Witness Match</td>
+<td>20 Points</td>
+</tr>
+
+</table>
+</div>
+
+<div class="card">
+<h2>Investigation Notes</h2>
+
+<ul style="padding-left:20px; line-height:2;">
+<li>DNA evidence is considered strongest.</li>
+<li>CCTV footage strengthens suspect confidence.</li>
+<li>Witness reports provide supporting evidence.</li>
+<li>AI ranks suspects based on evidence score.</li>
+<li>Highest score becomes primary suspect.</li>
+</ul>
+</div>
+
+</div>
+
+<footer>
+AI Detective Investigation System | FEDF Project
+</footer>
+
+<script>
+
+let suspects = [];
+
+function addSuspect(){
+
+let name = document.getElementById("name").value;
+let dna = Number(document.getElementById("dna").value);
+let cctv = Number(document.getElementById("cctv").value);
+let witness = Number(document.getElementById("witness").value);
+
+if(name === ""){
+    alert("Please enter suspect name");
+    return;
+}
+
+let score = (dna * 50) + (cctv * 30) + (witness * 20);
+
+suspects.push({
+    name:name,
+    dna:dna,
+    cctv:cctv,
+    witness:witness,
+    score:score
+});
+
+let table = document.getElementById("suspectTable");
+
+let row = table.insertRow();
+
+row.insertCell(0).innerHTML = name;
+row.insertCell(1).innerHTML = dna;
+row.insertCell(2).innerHTML = cctv;
+row.insertCell(3).innerHTML = witness;
+row.insertCell(4).innerHTML = score;
+
+document.getElementById("suspectCount").innerText = suspects.length;
+
+document.getElementById("name").value = "";
+document.getElementById("dna").value = "";
+document.getElementById("cctv").value = "";
+document.getElementById("witness").value = "";
+}
+
+function analyze(){
+
+if(suspects.length === 0){
+    alert("Please add suspects first.");
+    return;
+}
+
+suspects.sort((a,b)=>b.score-a.score);
+
+let top = suspects[0];
+
+let probability = Math.min(95, top.score);
+
+document.getElementById("result").innerHTML = `
+Primary Suspect: ${top.name}<br><br>
+Evidence Score: ${top.score}<br><br>
+Estimated Guilt Probability: ${probability}%<br><br>
+Recommendation: Conduct detailed interrogation and evidence verification.
+`;
+}
+
+</script>
+
+</body>
+</html>
